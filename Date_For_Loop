@@ -1,0 +1,21 @@
+import pickle
+
+urlList = []
+urlNames = []
+urlListAndNames = {}
+baseURL = "XXX/XXX/"
+
+
+for year in range(2008, 2021):
+    for month in range(1,13):
+        if year%4==0 and month==2:
+            ndays=29
+        else:
+            ndays=int("dummy 31 28 31 30 31 30 31 31 30 31 30 31".split()[month])
+        for day in range(1, ndays+1):
+        
+            urlList.append(str(f"{baseURL}%.4d/%.2d/" % (year, month, year, month, day)))
+            urlNames.append(str(f"%.4d%.2d%.2d.csv" % (year, month, day)))
+            urlListAndNames = zip(urlList, urlNames)
+            with open("data/New_URL_List" + ".pkl", 'wb') as f:
+                pickle.dump(urlListAndNames, f, pickle.HIGHEST_PROTOCOL)
