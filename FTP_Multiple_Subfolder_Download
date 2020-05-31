@@ -1,0 +1,58 @@
+import ftplib
+from datetime import datetime
+import os
+import pickle
+
+# Load the list of different subfolders in the FTP
+with open('FILE_LOCATION' + '.pkl', 'rb') as f:
+    subFolders = pickle.load(f)
+    
+'''
+#ALTERNATIVE TO HAVING A FOLDER OF SUBFOLDER LOCATIONS
+
+subFolders = "XX/, YY/, ZZ/"
+
+'''
+
+
+address = "ftp.XX.ac.uk"
+userName = "YOUR_USERNAME"
+password = "YOUR_PASSWORD"
+
+localDrive = "AREA_ON_LOCAL_FOR_SAVING"
+
+
+# Login to FTP site
+ftp = ftplib.FTP(address)
+ftp.login(userName, password)
+print("Site Accessed")
+
+for fileLocation in subFolders:
+    try:
+
+        # Change working directory
+        ftp.cwd(fileLocation)
+
+        # Save list of file names
+        dataFiles = ftp.nlst()
+
+        print(dataFiles)
+
+        currentFile = 0
+        totalFiles = len(dataFiles)
+
+        # Enter list of files and save each file
+        for dataFile in dataFiles:
+            startTime = datetime.now()
+            currentFile += 1
+            print("Downloading file {} ... {} of {} ...".format(dataFile, currentFile, totalFiles))
+            with open(os.path.join(localDrive, dataFile), "wb") as f:
+                ftp.retrbinary('RETR ' + dataFile, f.write)
+            endTime = datetime.now()
+            runTime = endTime - startTime
+            print("File took {}".format(str(runTime)))
+
+        ftp.quit()
+
+    except:
+        pass
