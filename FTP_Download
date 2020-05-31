@@ -1,0 +1,45 @@
+import ftplib
+from datetime import datetime
+import os
+
+address = "ftp.XXX.ac.uk"
+userName = "YOUR_USERNAME"
+password = "YOUR_PASSWORD"
+fileLocation = "SUBFOLDER LOCATION WHERE DESIRED FILES ARE"
+localDrive = "AREA ON LOCAL DRIVE YOU WISH TO SAVE"
+
+
+# Login to FTP site
+ftp = ftplib.FTP(address)
+ftp.login(userName, password)
+print("Site Accessed")
+
+print(ftp)
+
+# Change working directory
+ftp.cwd(fileLocation)
+
+print(ftp)
+
+# Save list of file names
+dataFiles = ftp.nlst()
+
+print(dataFiles)
+
+currentFile = 0
+totalFiles = len(dataFiles)
+
+# Enter list of files and save each file
+for dataFile in dataFiles:
+    startTime = datetime.now()
+    currentFile += 1
+    print("Downloading file {} ... {} of {} ...".format(dataFile, currentFile, totalFiles))
+    with open(os.path.join(localDrive, dataFile), "wb") as f:
+        ftp.retrbinary('RETR ' + dataFile, f.write)
+    endTime = datetime.now()
+    runTime = endTime - startTime
+    print("File took {}".format(str(runTime)))
+
+ftp.quit()
+
+
