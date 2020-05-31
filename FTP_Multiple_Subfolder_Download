@@ -55,5 +55,5 @@ for fileLocation in subFolders:
         ftp.quit()
 
     except:
-        print("file {} not present".format(fileLocation))
+        print("Subfolder - {} does not exist".format(fileLocation))
         pass
